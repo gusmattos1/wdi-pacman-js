@@ -2,6 +2,8 @@
 var score = 0;
 var lives = 2;
 var powerpellet = 4;
+var dots = 240;
+var eatInSequence = 0;
 
 
 // Define your ghosts here
@@ -55,12 +57,13 @@ function clearScreen() {
 }
 
 function displayStats() {
-  console.log('Score: ' + score + '     Lives: ' + lives + '\nPower-Pellet: ' + powerpellet);
+  console.log('Score: ' + score + '     Lives: ' + lives + '\nPower-Pellet: ' + powerpellet + '\nDots: ' + dots + '\nCombo: ' + eatInSequence);
 }
 
 function displayMenu() {
   console.log('\n\nSelect Option:\n');  // each \n creates a new line
-  console.log('(d) Eat Dot');
+  console.log('(d) Eat 1 Dot');
+  console.log('(t) Eat 10 Dots');
   console.log('(q) Quit');
   if (powerpellet > 0){
   console.log('(p) Power-Pellet');}
@@ -74,9 +77,15 @@ function displayMenu() {
 function eatGhost(ghost) {
   if (ghost['edible'] === true){
     console.log('\nWell done! you eat ' + ghost['name']);
-    score += 200
+    if (eatInSequence === 0){
+    score += 200}else if (eatInSequence === 1){
+    score += 400}else if (eatInSequence === 2){
+    score += 800}else{
+    score += 1600}
+    eatInSequence += 1
     ghost['edible'] = false
   } else {
+      eatInSequence = 0
       if (lives > 1){
       console.log('\nGhost ' + ghost['name'] + ' Colour ' + ghost['colour'] + ' not edible')
       lives -= 1
@@ -107,9 +116,10 @@ function displayPrompt() {
 
 
 // Menu Options
-function eatDot() {
+function eatDot(number) {
   console.log('\nChomp!');
-  score += 10;
+  score += (10 * number);
+  dots -= number
 }
 
 
@@ -124,7 +134,10 @@ function processInput(key) {
       eatPowerPellet();
       break;
     case 'd':
-      eatDot();
+      eatDot(1);
+      break;
+    case 't':
+      eatDot(10);
       break;
     case '1':
       eatGhost(ghosts[0]);
